@@ -18,19 +18,21 @@ where state in ('JharKhand' , 'Bihar')
 order by state; 
 
 -- Total Population of India..
-select sum(population) as Total_Population from Dataset_02 ; 
+select sum(population) as Total_Population 
+from Dataset_02 ; 
 
 --Average Growth 
-select avg(growth)*100 as Average_Growth_PErcantage from DataSet_01  ; 
+select avg(growth)*100 as Average_Growth_PErcantage 
+from DataSet_01  ; 
 
 -- Average Growth Per State
 select state , avg(growth) * 100 as Average_Growth
 from Dataset_01 
 group by state
-order by Average_Growth desc; 
+order by Average_Growth desc ; 
 
 -- Average Growth Per State Top 05
-select state , avg(growth) * 100 as Average_Growth
+select State , round(avg(growth) * 100 , 2 ) as Average_Growth
 from Dataset_01 
 group by state
 order by Average_Growth desc
@@ -158,10 +160,11 @@ from AB group by state
 order by Total_Populations desc; 
 
 -- Top 5 State Based on Populations..
-With AB as (select a.district , a.state , a.growth , a.sex_ratio , a.literacy , b.area_km2  , b.Population 
+With AB as (select a.district , a.state , a.growth , a.sex_ratio , a.literacy , b.area_km2  , 
+b.Population 
 from Dataset_01 a join Dataset_02 b
 on a.District = b.District)
-select top 5 state , sum(population) as Total_Populations
+select top 5 State , round(sum(population),0) as Total_Populations
 from AB group by state
 order by Total_Populations desc; 
 
@@ -203,7 +206,8 @@ from AB ;
 
 
 -- Top 5 State Where Numbers of Female is Highers
-With AB as (select a.district , a.state , a.growth , (a.sex_ratio/1000 ) as new_Sex_ratio, a.literacy , b.area_km2  , b.Population ,
+With AB as (select a.district , a.state , a.growth , (a.sex_ratio/1000 ) as new_Sex_ratio, 
+a.literacy , b.area_km2  , b.Population ,
 round(( Population / ((a.sex_ratio/1000 ) + 1) ), 0) as Num_of_Male,
 round((Population * (a.sex_ratio/1000 ) ) / ((a.sex_ratio/1000 ) + 1) , 0) as Num_of_Female
 from Dataset_01 a join Dataset_02 b
@@ -247,7 +251,8 @@ from AB
 order by Area_km2 desc; 
 
 -- How many area have present in the state
-With AB as (select a.district , a.state , a.growth , (a.sex_ratio/1000 ) as new_Sex_ratio, a.literacy , b.area_km2  , b.Population ,
+With AB as (select a.district , a.state , a.growth , (a.sex_ratio/1000 ) as new_Sex_ratio,
+a.literacy , b.area_km2  , b.Population ,
 round(( Population / ((a.sex_ratio/1000 ) + 1) ), 0) as Num_of_Male,
 round((Population * (a.sex_ratio/1000 ) ) / ((a.sex_ratio/1000 ) + 1) , 0) as Num_of_Female
 from Dataset_01 a join Dataset_02 b
@@ -255,7 +260,7 @@ on a.District = b.District)
 select top 5 state , sum(Area_km2) as Total_Area
 from AB
 group by state
-order by Total_Area desc; 
+order by Total_Area desc ; 
 
 
  
@@ -284,7 +289,8 @@ from Dataset_01 a join Dataset_02 b
 on a.district = b.district)
 select state , sum(Population) as Total_Population_State 
 from Ab 
-group by state; 
+group by state
+order by Total_Population_State ; 
 
 -- Literate People In Every State
 With Ab as (select a.district , a.state , a.Growth , a.Sex_Ratio , a.Literacy , b.Area_km2 , b.Population 
@@ -295,7 +301,7 @@ from Ab
 group by state
 order by Total_Literate_People_In_State desc; 
 
--- Literacy Percantage of Every State...
+-- Literacy Percantage of Every State or Union Teritary...
 select State , sum(Population) as Total_Population , sum(Literate_People) as Total_Literate_People ,
 sum(Illiterate_people) as Total_Illiterate_People ,
 round((SUM(Literate_People) / SUM(Population)) * 100 , 0) AS Literacy_Percentage
@@ -308,7 +314,7 @@ group by State
 order by Literacy_Percentage desc; 
 
 -- Previous Census Population of Every State
-select State , sum(Population) as Total_Population ,
+select Top 5 State , sum(Population) as Total_Population ,
 round(sum(Population / (1 + Growth)) , 0) as Previous_Census_Population , 
 sum(Literate_People) as Total_Literate_People ,
 sum(Illiterate_people) as Total_Illiterate_People ,
@@ -318,7 +324,8 @@ round((b.Population * a.Literacy/100) , 0) as Literate_People ,
 round(( Population - (b.Population * a.Literacy/100)) , 0) as Illiterate_people
 from Dataset_01 a join Dataset_02 b 
 on a.district = b.district) ABC
-group by State ; 
+group by State 
+order by Previous_Census_Population desc ; 
 
 -- Total population of India Before And After NEw Census
 select sum(Total_Population) as Current_Sensus , 
